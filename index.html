@@ -1,0 +1,1684 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lapzy — Cronometragem de Voltas para Kart</title>
+
+  <!-- SEO -->
+  <meta name="description" content="Lapzy transforma seu smartphone em uma ferramenta de telemetria. Cronometre voltas, acompanhe setores e evolua a cada corrida. Disponível para Android." />
+  <meta name="keywords" content="lapzy, cronometragem kart, app kart, telemetria kart, tempo de volta, kartódromo, cronômetro kart android" />
+  <meta name="author" content="Lapzy" />
+  <link rel="canonical" href="https://lapzy.app/" />
+
+  <!-- Open Graph (WhatsApp, Facebook, LinkedIn) -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://lapzy.app/" />
+  <meta property="og:title" content="Lapzy — Cronometragem de Voltas para Kart" />
+  <meta property="og:description" content="Mais que cronometragem: sua estratégia de corrida, em tempo real. Configure o traçado, acompanhe cada volta e evolua na pista." />
+  <meta property="og:image" content="https://lapzy.app/og-image.svg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:locale" content="pt_BR" />
+  <meta property="og:site_name" content="Lapzy" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Lapzy — Cronometragem de Voltas para Kart" />
+  <meta name="twitter:description" content="Mais que cronometragem: sua estratégia de corrida, em tempo real." />
+  <meta name="twitter:image" content="https://lapzy.app/og-image.svg" />
+
+  <!-- Theme color (barra do navegador mobile) -->
+  <meta name="theme-color" content="#080808" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+  <script type="text/babel" src="tweaks-panel.jsx"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green: #22c55e;
+      --green-glow: #22c55e44;
+      --purple: #a855f7;
+      --purple-glow: #a855f744;
+      --red: #ef4444;
+      --red-glow: #ef444433;
+      --bg: #080808;
+      --bg2: #0f0f0f;
+      --bg3: #141414;
+      --border: #1e1e1e;
+      --text: #f5f5f5;
+      --text-muted: #666;
+      --text-dim: #999;
+      --font-display: 'Space Grotesk', sans-serif;
+      --font-mono: 'Space Mono', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-display);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
+
+    /* Utility */
+    .mono { font-family: var(--font-mono); }
+    .green { color: var(--green); }
+    .purple { color: var(--purple); }
+    .red { color: var(--red); }
+    .muted { color: var(--text-muted); }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 48px;
+      background: rgba(8,8,8,0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.3s;
+    }
+    nav.scrolled { border-bottom-color: var(--border); }
+    .nav-logo {
+      font-family: var(--font-mono);
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: var(--text);
+    }
+    .nav-logo span { color: var(--green); }
+    .nav-cta {
+      background: var(--green);
+      color: #000;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 10px 22px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      transition: opacity 0.15s, transform 0.15s;
+    }
+    .nav-cta:hover { opacity: 0.85; transform: translateY(-1px); }
+
+    /* SECTION BASE */
+    section { position: relative; }
+
+    /* HERO */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 120px 24px 80px;
+      overflow: hidden;
+    }
+
+    .hero-bg-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(34,197,94,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(34,197,94,0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black 40%, transparent 100%);
+    }
+
+    .hero-glow {
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(34,197,94,0.12) 0%, transparent 70%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .hero-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .hero-eyebrow::before,
+    .hero-eyebrow::after {
+      content: '';
+      width: 40px;
+      height: 1px;
+      background: var(--green);
+      opacity: 0.5;
+    }
+
+    .hero-headline {
+      font-size: clamp(52px, 8vw, 100px);
+      font-weight: 700;
+      line-height: 1.0;
+      letter-spacing: -0.03em;
+      margin-bottom: 28px;
+      text-wrap: balance;
+    }
+    .hero-headline .accent {
+      color: var(--green);
+      position: relative;
+    }
+
+    .hero-sub {
+      font-size: clamp(16px, 2vw, 20px);
+      color: var(--text-dim);
+      max-width: 520px;
+      line-height: 1.6;
+      margin-bottom: 48px;
+      text-wrap: pretty;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 72px;
+    }
+
+    .btn-primary {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--green);
+      color: #000;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 16px;
+      letter-spacing: 0.02em;
+      padding: 16px 36px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+      box-shadow: 0 0 32px rgba(34,197,94,0.25);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 48px rgba(34,197,94,0.4);
+    }
+    .btn-primary svg { flex-shrink: 0; }
+
+    .hero-badges {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 8px 16px;
+      font-size: 12px;
+      color: var(--text-dim);
+      font-family: var(--font-mono);
+      letter-spacing: 0.05em;
+    }
+    .badge .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 6px var(--green);
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+    .badge .dot.soon { background: var(--text-muted); box-shadow: none; animation: none; }
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.7); }
+    }
+
+    /* MOCKUP STRIP */
+    .hero-mockup {
+      position: relative;
+      width: 100%;
+      max-width: 900px;
+      margin-top: 16px;
+      overflow: visible;
+    }
+
+    .mockup-phone {
+      width: 220px;
+      background: #111;
+      border-radius: 28px;
+      border: 1px solid #2a2a2a;
+      overflow: hidden;
+      box-shadow:
+        0 0 0 1px #1a1a1a,
+        0 32px 64px rgba(0,0,0,0.8),
+        0 0 80px rgba(34,197,94,0.1);
+      display: inline-block;
+      position: relative;
+    }
+    .mockup-phone img { width: 100%; display: block; }
+
+    .mockup-landscape {
+      width: 380px;
+      background: #111;
+      border-radius: 16px;
+      border: 1px solid #2a2a2a;
+      overflow: hidden;
+      box-shadow:
+        0 0 0 1px #1a1a1a,
+        0 32px 64px rgba(0,0,0,0.8),
+        0 0 80px rgba(168,85,247,0.1);
+      display: inline-block;
+    }
+    .mockup-landscape img { width: 100%; display: block; }
+
+    .mockup-row {
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 24px;
+    }
+
+    @media (max-width: 700px) {
+      .mockup-row {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+      }
+      .mockup-row > div:first-child {
+        width: 100%;
+        max-width: 300px;
+      }
+      .mockup-row > div:last-child {
+        width: 100%;
+        max-width: 360px;
+      }
+      .mockup-phone {
+        width: 100%;
+        max-width: 300px;
+      }
+      .floating-stat {
+        display: none !important;
+      }
+    }
+
+    /* Floating stat */
+    .floating-stat {
+      position: absolute;
+      background: rgba(15,15,15,0.95);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 16px;
+      backdrop-filter: blur(8px);
+      animation: float 4s ease-in-out infinite;
+      z-index: 10;
+    }
+    .floating-stat.left {
+      left: -20px;
+      bottom: 60px;
+      animation-delay: 0s;
+    }
+    .floating-stat.right {
+      right: -20px;
+      top: 60px;
+      animation-delay: 2s;
+    }
+    .stat-label { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.15em; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; }
+    .stat-value { font-family: var(--font-mono); font-size: 20px; font-weight: 700; color: var(--green); }
+    .stat-value.purple { color: var(--purple); }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    /* DIVIDER */
+    .section-divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border), transparent);
+      margin: 0 48px;
+    }
+
+    /* PROBLEMA */
+    #problema {
+      padding: 120px 24px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .section-tag {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+    .section-headline {
+      font-size: clamp(32px, 5vw, 56px);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.025em;
+      margin-bottom: 24px;
+      text-wrap: balance;
+    }
+    .section-body {
+      font-size: 18px;
+      color: var(--text-dim);
+      line-height: 1.7;
+      max-width: 560px;
+    }
+
+    .problema-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      margin-top: 72px;
+    }
+    @media (max-width: 768px) { .problema-grid { grid-template-columns: 1fr; gap: 32px; } }
+
+    .problema-item {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 32px;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      transition: border-color 0.3s;
+    }
+    .problema-item:hover { border-color: #333; }
+
+    .problema-number {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+    .problema-title {
+      font-size: 20px;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+    .problema-desc {
+      font-size: 15px;
+      color: var(--text-dim);
+      line-height: 1.6;
+    }
+    .problema-bar {
+      height: 2px;
+      background: var(--border);
+      border-radius: 1px;
+      margin-top: 8px;
+      overflow: hidden;
+    }
+    .problema-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--red), transparent);
+      border-radius: 1px;
+      animation: bar-fill 2s ease-out forwards;
+    }
+    @keyframes bar-fill {
+      from { width: 0%; }
+      to { width: var(--w, 75%); }
+    }
+
+    /* SOLUÇÃO */
+    #solucao {
+      padding: 120px 24px;
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .solucao-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+    @media (max-width: 768px) { .solucao-inner { grid-template-columns: 1fr; gap: 48px; } }
+
+    .solucao-pillars {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      margin-top: 40px;
+    }
+    .pillar {
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+      padding: 24px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      transition: all 0.3s;
+    }
+    .pillar:hover {
+      border-color: var(--green);
+      box-shadow: 0 0 24px rgba(34,197,94,0.05);
+    }
+    .pillar-icon {
+      width: 40px;
+      height: 40px;
+      flex-shrink: 0;
+      border-radius: 8px;
+      background: rgba(34,197,94,0.1);
+      border: 1px solid rgba(34,197,94,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--green);
+    }
+    .pillar-text h4 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .pillar-text p {
+      font-size: 14px;
+      color: var(--text-dim);
+      line-height: 1.5;
+    }
+
+    .solucao-visual {
+      position: relative;
+      display: flex;
+      justify-content: center;
+    }
+
+    .terminal-box {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      width: 100%;
+      max-width: 380px;
+      box-shadow: 0 0 40px rgba(0,0,0,0.5);
+    }
+    .terminal-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .terminal-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .terminal-dot.red { background: #ef4444; }
+    .terminal-dot.yellow { background: #f59e0b; }
+    .terminal-dot.green { background: var(--green); }
+    .terminal-title { font-size: 11px; color: var(--text-muted); letter-spacing: 0.1em; margin-left: auto; }
+
+    .terminal-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.03);
+      font-size: 12px;
+    }
+    .terminal-row:last-child { border-bottom: none; }
+    .t-label { color: var(--text-muted); }
+    .t-val { font-weight: 700; }
+    .t-val.green { color: var(--green); }
+    .t-val.purple { color: var(--purple); }
+    .t-val.white { color: #fff; }
+
+    .terminal-big {
+      text-align: center;
+      padding: 20px 0;
+      margin: 16px 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .terminal-big-label { font-size: 10px; letter-spacing: 0.2em; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; }
+    .terminal-big-val { font-size: 42px; font-weight: 700; color: #fff; line-height: 1; }
+    .terminal-big-badge {
+      display: inline-block;
+      margin-top: 10px;
+      background: rgba(34,197,94,0.15);
+      color: var(--green);
+      border: 1px solid rgba(34,197,94,0.3);
+      border-radius: 4px;
+      padding: 3px 10px;
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    /* TELAS */
+    #telas {
+      padding: 120px 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .telas-header {
+      text-align: center;
+      margin-bottom: 80px;
+    }
+
+    .tela-block {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+      margin-bottom: 100px;
+      padding-bottom: 100px;
+      border-bottom: 1px solid var(--border);
+    }
+    .tela-block:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .tela-block.reverse { direction: rtl; }
+    .tela-block.reverse > * { direction: ltr; }
+    @media (max-width: 900px) {
+      .tela-block, .tela-block.reverse { grid-template-columns: 1fr; direction: ltr; }
+    }
+
+    .tela-info { display: flex; flex-direction: column; gap: 20px; }
+    .tela-num {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.25em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+    .tela-title {
+      font-size: clamp(28px, 4vw, 40px);
+      font-weight: 700;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+    }
+    .tela-desc {
+      font-size: 17px;
+      color: var(--text-dim);
+      line-height: 1.7;
+      max-width: 440px;
+    }
+    .tela-features {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 8px;
+    }
+    .tela-feature {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      color: var(--text-dim);
+    }
+    .tela-feature::before {
+      content: '';
+      width: 16px;
+      height: 1px;
+      background: var(--green);
+      flex-shrink: 0;
+    }
+
+    /* CAROUSEL */
+    .carousel-wrap {
+      position: relative;
+      overflow: hidden;
+      border-radius: 20px;
+      background: #111;
+      border: 1px solid #2a2a2a;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.7);
+    }
+    .carousel-track {
+      display: flex;
+      transition: transform 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .carousel-slide {
+      min-width: 100%;
+      flex-shrink: 0;
+    }
+    .carousel-slide img {
+      width: 100%;
+      display: block;
+      height: auto;
+    }
+
+    /* Landscape carousels (corrida screens) */
+    #carousel-corrida .carousel-slide {
+      background: #0a0a0a;
+    }
+    #carousel-corrida .carousel-slide img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* Portrait carousels (config screens) */
+    #carousel-config .carousel-slide {
+      background: #0a0a0a;
+      display: flex;
+      justify-content: center;
+    }
+    #carousel-config .carousel-slide img {
+      width: auto;
+      max-width: 100%;
+      max-height: 680px;
+      object-fit: contain;
+    }
+    .carousel-caption {
+      padding: 14px 20px 6px;
+      background: rgba(0,0,0,0.5);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      color: var(--text-dim);
+      text-align: center;
+      min-height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.3s;
+    }
+    .carousel-caption strong {
+      color: var(--green);
+      font-weight: 700;
+    }
+    .carousel-dots {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      padding: 8px 14px 14px;
+      background: rgba(0,0,0,0.5);
+    }
+    .carousel-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 3px;
+      background: #333;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+    }
+    .carousel-dot.active {
+      background: var(--green);
+      width: 20px;
+      box-shadow: 0 0 8px var(--green);
+    }
+    .carousel-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0,0,0,0.7);
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--text);
+      font-size: 14px;
+      transition: all 0.2s;
+      z-index: 2;
+    }
+    .carousel-nav:hover { background: rgba(34,197,94,0.15); border-color: var(--green); }
+    .carousel-nav.prev { left: 10px; }
+    .carousel-nav.next { right: 10px; }
+
+    /* Landscape carousel */
+    .landscape-mockup {
+      border-radius: 16px;
+      overflow: hidden;
+      background: #0a0a0a;
+      border: 1px solid #2a2a2a;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.7);
+    }
+
+    /* DIFERENCIAIS */
+    #diferenciais {
+      padding: 120px 24px;
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .diferenciais-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .diferenciais-header {
+      text-align: center;
+      margin-bottom: 72px;
+    }
+    .diferenciais-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 24px;
+    }
+    .diferencial-card {
+      padding: 36px 28px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      transition: all 0.3s;
+      cursor: default;
+    }
+    .diferencial-card:hover {
+      border-color: var(--green);
+      transform: translateY(-4px);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.4), 0 0 32px rgba(34,197,94,0.06);
+    }
+    .diferencial-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 10px;
+      background: rgba(34,197,94,0.08);
+      border: 1px solid rgba(34,197,94,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--green);
+    }
+    .diferencial-title {
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+    .diferencial-desc {
+      font-size: 14px;
+      color: var(--text-dim);
+      line-height: 1.6;
+    }
+
+    /* FUTURO */
+    #futuro {
+      padding: 120px 24px;
+      max-width: 900px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .futuro-timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin-top: 64px;
+      text-align: left;
+      max-width: 560px;
+      margin-left: auto;
+      margin-right: auto;
+      position: relative;
+    }
+    .futuro-timeline::before {
+      content: '';
+      position: absolute;
+      left: 15px;
+      top: 8px;
+      bottom: 8px;
+      width: 1px;
+      background: linear-gradient(to bottom, var(--green), var(--purple), transparent);
+    }
+    .timeline-item {
+      display: flex;
+      gap: 28px;
+      align-items: flex-start;
+      padding: 20px 0;
+    }
+    .timeline-dot {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      border: 2px solid var(--green);
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--green);
+      font-weight: 700;
+      position: relative;
+      z-index: 1;
+    }
+    .timeline-dot.done {
+      background: var(--green);
+      color: #000;
+    }
+    .timeline-dot.future {
+      border-color: #333;
+      color: #444;
+    }
+    .timeline-content h4 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .timeline-content p {
+      font-size: 14px;
+      color: var(--text-dim);
+      line-height: 1.5;
+    }
+    .timeline-label {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.15em;
+      color: var(--green);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .timeline-label.future-label { color: var(--text-muted); }
+
+    /* CTA FINAL */
+    #cta-final {
+      padding: 160px 24px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-glow {
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(34,197,94,0.1) 0%, transparent 70%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+    .cta-headline {
+      font-size: clamp(40px, 7vw, 80px);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+      margin-bottom: 24px;
+      text-wrap: balance;
+      position: relative;
+    }
+    .cta-sub {
+      font-size: 18px;
+      color: var(--text-dim);
+      margin-bottom: 48px;
+      position: relative;
+    }
+    .cta-actions {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      position: relative;
+    }
+    .btn-secondary {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: transparent;
+      color: var(--text);
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 14px;
+      padding: 16px 28px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .btn-secondary:hover { border-color: #444; background: rgba(255,255,255,0.03); }
+
+    /* CONTATO */
+    #contato {
+      padding: 80px 24px;
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+    }
+    .contato-inner {
+      max-width: 600px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .contato-title {
+      font-size: 28px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      letter-spacing: -0.02em;
+    }
+    .contato-sub {
+      font-size: 15px;
+      color: var(--text-dim);
+      margin-bottom: 40px;
+    }
+    .contato-links {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .contato-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 28px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 14px;
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+    .contato-btn.whatsapp {
+      background: #25D366;
+      color: #000;
+      box-shadow: 0 0 24px rgba(37,211,102,0.2);
+    }
+    .contato-btn.whatsapp:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 40px rgba(37,211,102,0.35);
+    }
+    .contato-btn.email {
+      background: transparent;
+      color: var(--text-dim);
+      border: 1px solid var(--border);
+    }
+    .contato-btn.email:hover { border-color: #444; color: var(--text); }
+
+    /* FOOTER */
+    footer {
+      padding: 32px 48px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .footer-logo {
+      font-family: var(--font-mono);
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-dim);
+    }
+    .footer-logo span { color: var(--green); }
+    .footer-copy {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+    }
+
+    /* ANIMATIONS */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 600px) {
+      nav { padding: 16px 20px; }
+      footer { padding: 24px 20px; }
+      .floating-stat { display: none; }
+      .flow-arrow { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="main-nav">
+  <div class="nav-logo">LAP<span>Z</span>Y</div>
+  <a href="https://play.google.com/store" class="nav-cta">Baixar agora</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg-grid"></div>
+  <div class="hero-glow"></div>
+
+  <div class="hero-eyebrow">Mais que cronometragem: sua estratégia de corrida, em tempo real.</div>
+
+  <h1 class="hero-headline">
+    Sua melhor volta<br />
+    começa com os<br />
+    <span class="accent">dados certos.</span>
+  </h1>
+
+  <p class="hero-sub">
+    Lapzy transforma seu smartphone em uma ferramenta de telemetria. Cronometre voltas, acompanhe setores e evolua a cada corrida.
+  </p>
+
+  <div class="hero-actions">
+    <div style="display:flex; gap:12px; flex-wrap:wrap; justify-content:center;">
+      <a href="https://play.google.com/store" class="btn-primary">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M3.18 23.76c.37.2.8.22 1.2.04l12.6-7.07-2.89-2.88L3.18 23.76zm-1.86-1.3c-.08-.19-.12-.4-.12-.62V2.16c0-.22.04-.43.12-.62l10.52 10.46L1.32 22.46zM20.5 10.83l-2.66-1.5L14.7 12l3.14 3.13 2.67-1.5c.76-.43.76-1.37-.01-1.8zM4.38.2C3.98.02 3.55.04 3.18.24l10.9 10.9L7.1 18.1 4.38.2z"/>
+        </svg>
+        Disponível na Google Play
+      </a>
+      <span class="btn-primary" style="background:#1a1a1a; color:#444; box-shadow:none; cursor:default; pointer-events:none; border:1px solid #2a2a2a; white-space:nowrap;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+        </svg>
+        Em breve na Apple Store
+      </span>
+    </div>
+  </div>
+
+  <!-- FLOW INDICATORS -->
+  <div style="display:flex; align-items:center; gap:0; margin-bottom:48px; flex-wrap:wrap; justify-content:center; row-gap:12px;">
+    <div style="display:flex; align-items:center; gap:10px; padding:10px 20px; background:rgba(34,197,94,0.07); border:1px solid rgba(34,197,94,0.2); border-radius:8px;">
+      <span style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.15em; color:var(--green); font-weight:700; text-transform:uppercase;">01</span>
+      <span style="font-size:13px; color:var(--text-dim); font-weight:500;">Configure o traçado</span>
+    </div>
+    <div style="padding:0 8px; color:#333; font-size:18px; font-weight:300;" class="flow-arrow">→</div>
+    <div style="display:flex; align-items:center; gap:10px; padding:10px 20px; background:rgba(168,85,247,0.07); border:1px solid rgba(168,85,247,0.2); border-radius:8px;">
+      <span style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.15em; color:var(--purple); font-weight:700; text-transform:uppercase;">02</span>
+      <span style="font-size:13px; color:var(--text-dim); font-weight:500;">Acompanhe cada volta</span>
+    </div>
+    <div style="padding:0 8px; color:#333; font-size:18px; font-weight:300;" class="flow-arrow">→</div>
+    <div style="display:flex; align-items:center; gap:10px; padding:10px 20px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.07); border-radius:8px;">
+      <span style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.15em; color:var(--text-muted); font-weight:700; text-transform:uppercase;">03</span>
+      <span style="font-size:13px; color:var(--text-dim); font-weight:500;">Evolua na pista</span>
+    </div>
+  </div>
+
+  <div class="hero-mockup">
+    <div class="mockup-row" style="padding: 20px 32px 24px;">
+      <div style="position:relative;">
+        <div class="mockup-phone">
+          <img src="uploads/config_tr2.jpg" alt="Configuração de traçado" />
+        </div>
+      </div>
+      <div style="position:relative; flex:1; max-width:400px;">
+        <!-- Melhor volta — topo direito -->
+        <div class="floating-stat" style="top:-16px; right:-16px; animation-delay:0s;">
+          <div class="stat-label">Melhor volta</div>
+          <div class="stat-value purple">0:58.341</div>
+        </div>
+        <!-- Setor 1 verde — meio direito -->
+        <div class="floating-stat" style="top:38%; right:-16px; animation-delay:1s; border-color: rgba(34,197,94,0.35);">
+          <div class="stat-label">Setor 1</div>
+          <div class="stat-value" style="color:var(--green);">▲ 0:19.120</div>
+        </div>
+        <!-- Setor 2 vermelho — baixo direito -->
+        <div class="floating-stat" style="bottom:-16px; right:-16px; animation-delay:2s; border-color: rgba(239,68,68,0.35);">
+          <div class="stat-label">Setor 2</div>
+          <div class="stat-value" style="color:var(--red);">▼ 0:22.840</div>
+        </div>
+        <div class="landscape-mockup">
+          <img src="uploads/setor_feedback_verde.png" alt="Corrida em tempo real" style="display:block;width:100%;" />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SEPARADOR -->
+<div style="position:relative; height:80px; overflow:hidden; pointer-events:none;">
+  <div style="
+    position:absolute; inset:0;
+    background: linear-gradient(to bottom, transparent 0%, rgba(34,197,94,0.04) 50%, transparent 100%);
+  "></div>
+  <div style="
+    position:absolute;
+    left:50%; top:50%;
+    transform:translate(-50%,-50%);
+    width:min(700px, 90vw);
+    height:1px;
+    background: linear-gradient(90deg, transparent 0%, rgba(34,197,94,0.5) 30%, rgba(168,85,247,0.5) 70%, transparent 100%);
+  "></div>
+  <div style="
+    position:absolute;
+    left:50%; top:50%;
+    transform:translate(-50%,-50%);
+    width:6px; height:6px;
+    border-radius:50%;
+    background:var(--green);
+    box-shadow: 0 0 12px var(--green), 0 0 24px rgba(34,197,94,0.4);
+  "></div>
+</div>
+
+<!-- PROBLEMA -->
+<section id="problema">
+  <div class="fade-up">
+    <div class="section-tag">// o problema</div>
+    <h2 class="section-headline">Você corre no escuro.</h2>
+    <p class="section-body">
+      Sem referência de tempo, você só sabe que foi mais rápido quando já passou. E aí já é tarde.
+    </p>
+  </div>
+  <div class="problema-grid">
+    <div class="problema-item fade-up">
+      <div class="problema-number">01 — Falta de referência</div>
+      <div class="problema-title">Você não sabe onde está perdendo tempo.</div>
+      <div class="problema-desc">Na curva 3? Na reta? No freio? Sem dados, tudo é intuição.</div>
+      <div class="problema-bar"><div class="problema-bar-fill" style="--w:85%"></div></div>
+    </div>
+    <div class="problema-item fade-up">
+      <div class="problema-number">02 — Sem evolução objetiva</div>
+      <div class="problema-title">Como saber se melhorou se não mediu?</div>
+      <div class="problema-desc">Sensação não é dado. Você precisa de números para evoluir de verdade.</div>
+      <div class="problema-bar"><div class="problema-bar-fill" style="--w:70%"></div></div>
+    </div>
+    <div class="problema-item fade-up">
+      <div class="problema-number">03 — Equipamento caro</div>
+      <div class="problema-title">Telemetria era coisa de quem tem patrocinador.</div>
+      <div class="problema-desc">Transponders, apps complexos, hardware dedicado. Para quê?</div>
+      <div class="problema-bar"><div class="problema-bar-fill" style="--w:60%"></div></div>
+    </div>
+    <div class="problema-item fade-up">
+      <div class="problema-number">04 — Apps complicados</div>
+      <div class="problema-title">No calor da corrida, você não tem tempo para configurar nada.</div>
+      <div class="problema-desc">A maioria dos apps exige demais. E você ainda nem saiu da garagem.</div>
+      <div class="problema-bar"><div class="problema-bar-fill" style="--w:78%"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SEPARADOR -->
+<div style="position:relative; height:80px; overflow:hidden; pointer-events:none;">
+  <div style="position:absolute; inset:0; background: linear-gradient(to bottom, transparent 0%, rgba(34,197,94,0.04) 50%, transparent 100%);"></div>
+  <div style="position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:min(700px, 90vw); height:1px; background: linear-gradient(90deg, transparent 0%, rgba(34,197,94,0.5) 30%, rgba(168,85,247,0.5) 70%, transparent 100%);"></div>
+  <div style="position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:6px; height:6px; border-radius:50%; background:var(--green); box-shadow: 0 0 12px var(--green), 0 0 24px rgba(34,197,94,0.4);"></div>
+</div>
+
+<!-- SOLUÇÃO -->
+<section id="solucao">
+  <div class="solucao-inner">
+    <div class="fade-up">
+      <div class="section-tag">// a solução</div>
+      <h2 class="section-headline">Lapzy.<br /><span style="color:var(--green)">Simples assim.</span></h2>
+      <p class="section-body" style="margin-bottom:0;">
+        Abra o app, configure seu traçado uma vez, e comece a correr. O Lapzy faz o resto — em tempo real, no seu celular.
+      </p>
+      <div class="solucao-pillars">
+        <div class="pillar">
+          <div class="pillar-icon">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <div class="pillar-text">
+            <h4>Controle total de tempo</h4>
+            <p>Voltas, setores, delta — tudo no display enquanto você pilota.</p>
+          </div>
+        </div>
+        <div class="pillar">
+          <div class="pillar-icon">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          </div>
+          <div class="pillar-text">
+            <h4>Evolução mensurável</h4>
+            <p>Histórico de voltas, melhor tempo e consistência por sessão.</p>
+          </div>
+        </div>
+        <div class="pillar">
+          <div class="pillar-icon">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+          <div class="pillar-text">
+            <h4>Precisão milimétrica</h4>
+            <p>Detecção de linha de largada por GPS. Sem hardwares extras.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="solucao-visual fade-up">
+      <div class="terminal-box">
+        <div class="terminal-bar">
+          <div class="terminal-dot red"></div>
+          <div class="terminal-dot yellow"></div>
+          <div class="terminal-dot green"></div>
+          <div class="terminal-title">SESSÃO ATUAL</div>
+        </div>
+        <div class="terminal-big">
+          <div class="terminal-big-label">Tempo da volta</div>
+          <div class="terminal-big-val mono">0:58.341</div>
+          <div class="terminal-big-badge">▲ MELHOR VOLTA</div>
+        </div>
+        <div class="terminal-row">
+          <span class="t-label">VOLTA</span>
+          <span class="t-val white">7</span>
+        </div>
+        <div class="terminal-row">
+          <span class="t-label">S1</span>
+          <span class="t-val green">0:19.120</span>
+        </div>
+        <div class="terminal-row">
+          <span class="t-label">S2</span>
+          <span class="t-val green">0:22.010</span>
+        </div>
+        <div class="terminal-row">
+          <span class="t-label">S3</span>
+          <span class="t-val green">0:17.211</span>
+        </div>
+        <div class="terminal-row">
+          <span class="t-label">MELHOR VOLTA</span>
+          <span class="t-val purple">0:58.341</span>
+        </div>
+        <div class="terminal-row">
+          <span class="t-label">DELTA</span>
+          <span class="t-val green">▲ −0.823</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SEPARADOR -->
+<div style="position:relative; height:80px; overflow:hidden; pointer-events:none;">
+  <div style="position:absolute; inset:0; background: linear-gradient(to bottom, transparent 0%, rgba(34,197,94,0.04) 50%, transparent 100%);"></div>
+  <div style="position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:min(700px, 90vw); height:1px; background: linear-gradient(90deg, transparent 0%, rgba(34,197,94,0.5) 30%, rgba(168,85,247,0.5) 70%, transparent 100%);"></div>
+  <div style="position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:6px; height:6px; border-radius:50%; background:var(--green); box-shadow: 0 0 12px var(--green), 0 0 24px rgba(34,197,94,0.4);"></div>
+</div>
+
+<!-- TELAS -->
+<section id="telas">
+  <div class="telas-header fade-up">
+    <div class="section-tag">// o app</div>
+    <h2 class="section-headline">Do traçado<br />ao resultado.</h2>
+  </div>
+
+  <!-- BLOCO 1: Configuração de Traçado -->
+  <div class="tela-block fade-up">
+    <div class="tela-info">
+      <div class="tela-num">
+</div>
+      <h3 class="tela-title">Configure o traçado<br />em 60 segundos.</h3>
+      <p class="tela-desc">
+        Abra o mapa, arraste a linha de largada e defina seus setores. Funciona em qualquer kartódromo do Brasil.
+      </p>
+      <div class="tela-features">
+        <div class="tela-feature">Detecção de largada por GPS</div>
+        <div class="tela-feature">Você define quais setores quer medir</div>
+        <div class="tela-feature">Largura da linha ajustável</div>
+        <div class="tela-feature">Coleta e armazenamento de dados 100% offline</div>
+      </div>
+    </div>
+    <div class="carousel-wrap" id="carousel-config">
+      <div class="carousel-track" id="track-config">
+        <div class="carousel-slide"><img src="uploads/config_tr1.jpg" alt="Configuração setores" /></div>
+        <div class="carousel-slide"><img src="uploads/config_tr2.jpg" alt="Configuração largada" /></div>
+      </div>
+      <button class="carousel-nav prev" onclick="carouselPrev('config')">‹</button>
+      <button class="carousel-nav next" onclick="carouselNext('config')">›</button>
+      <div class="carousel-caption" id="caption-config">Largada / Chegada
+— Trace a linha de largada diretamente sobre o kartódromo</div>
+      <div class="carousel-dots" id="dots-config">
+        <button class="carousel-dot active" onclick="carouselGo('config',0)"></button>
+        <button class="carousel-dot" onclick="carouselGo('config',1)"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOCO 2: Corrida em tempo real -->
+  <div class="tela-block reverse fade-up">
+    <div class="tela-info">
+      <div class="tela-num">// Tela 02 — Corrida</div>
+      <h3 class="tela-title">A corrida<br />no seu display.</h3>
+      <p class="tela-desc">
+        Em modo paisagem, você vê o tempo da volta em tempo real — e sabe na hora se está melhor ou pior que o seu recorde.
+      </p>
+      <div class="tela-features">
+        <div class="tela-feature">Borda verde = melhor volta de todos os tempos</div>
+        <div class="tela-feature">Borda vermelha = abaixo do seu melhor</div>
+        <div class="tela-feature">Delta por setor</div>
+        <div class="tela-feature">Número da volta e tempo total</div>
+      </div>
+    </div>
+    <div id="carousel-corrida" style="position:relative; border-radius:16px; border:1px solid #2a2a2a; box-shadow: 0 32px 80px rgba(0,0,0,0.7); background:#0a0a0a;">
+      <div style="overflow:hidden; width:100%; border-radius:16px 16px 0 0;">
+        <div id="track-corrida" style="display:flex; transition: transform 0.45s cubic-bezier(0.25,0.46,0.45,0.94);">
+          <img src="uploads/setor_feedback_verde.png" alt="Setor melhor" style="min-width:100%; width:100%; height:auto; display:block; flex-shrink:0;" />
+          <img src="uploads/borda_volta_melhor.png" alt="Volta melhor" style="min-width:100%; width:100%; height:auto; display:block; flex-shrink:0;" />
+          <img src="uploads/borda_volta_pior.png" alt="Volta pior" style="min-width:100%; width:100%; height:auto; display:block; flex-shrink:0;" />
+        </div>
+      </div>
+      <button class="carousel-nav prev" onclick="carouselPrev('corrida')" style="top:45%;">‹</button>
+      <button class="carousel-nav next" onclick="carouselNext('corrida')" style="top:45%;">›</button>
+      <div class="carousel-caption" id="caption-corrida"></div>
+      <div class="carousel-dots" id="dots-corrida">
+        <button class="carousel-dot active" onclick="carouselGo('corrida',0)"></button>
+        <button class="carousel-dot" onclick="carouselGo('corrida',1)"></button>
+        <button class="carousel-dot" onclick="carouselGo('corrida',2)"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOCO 3: Pós-corrida -->
+  <div class="tela-block fade-up">
+    <div class="tela-info">
+      <div class="tela-num">// Tela 03 — Análise</div>
+      <h3 class="tela-title">Saiu da pista.<br />Hora de entender.</h3>
+      <p class="tela-desc">
+        Depois da sessão, veja tudo: melhor volta, consistência por setor, evolução ao longo do dia. Em breve.
+      </p>
+      <div class="tela-features">
+        <div class="tela-feature">Melhor volta da sessão</div>
+        <div class="tela-feature">Consistência por setor</div>
+        <div class="tela-feature">Evolução volta a volta</div>
+        <div class="tela-feature">Exportação de dados (em breve)</div>
+      </div>
+    </div>
+    <div style="display:flex; align-items:center; justify-content:center;">
+      <div style="
+        width: 100%;
+        max-width: 380px;
+        background: var(--bg3);
+        border: 1px solid #2a2a2a;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 32px 80px rgba(0,0,0,0.7);
+        padding: 32px 24px;
+        font-family: var(--font-mono);
+      ">
+        <div style="font-size:10px; letter-spacing:0.2em; color:var(--text-muted); text-transform:uppercase; margin-bottom:24px;">Resumo da sessão</div>
+        <div style="font-size:11px; color:var(--text-muted); margin-bottom:6px;">Melhor volta</div>
+        <div style="font-size:44px; font-weight:700; color:#fff; margin-bottom:4px;">0:58.341</div>
+        <div style="font-size:11px; color:var(--purple); letter-spacing:0.1em; margin-bottom:28px;">★ RECORDE PESSOAL</div>
+
+        <div style="display:flex; flex-direction:column; gap:12px; margin-bottom:28px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 14px; background:rgba(34,197,94,0.06); border:1px solid rgba(34,197,94,0.15); border-radius:8px;">
+            <span style="font-size:11px; color:var(--text-muted);">S1</span>
+            <span style="font-size:14px; font-weight:700; color:var(--green);">0:19.120</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 14px; background:rgba(34,197,94,0.06); border:1px solid rgba(34,197,94,0.15); border-radius:8px;">
+            <span style="font-size:11px; color:var(--text-muted);">S2</span>
+            <span style="font-size:14px; font-weight:700; color:var(--green);">0:22.010</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 14px; background:rgba(239,68,68,0.06); border:1px solid rgba(239,68,68,0.15); border-radius:8px;">
+            <span style="font-size:11px; color:var(--text-muted);">S3</span>
+            <span style="font-size:14px; font-weight:700; color:var(--red);">0:17.211</span>
+          </div>
+        </div>
+
+        <div style="display:flex; gap:12px;">
+          <div style="flex:1; padding:16px; background:var(--bg); border:1px solid var(--border); border-radius:8px; text-align:center;">
+            <div style="font-size:9px; color:var(--text-muted); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:6px;">Voltas</div>
+            <div style="font-size:22px; font-weight:700; color:#fff;">12</div>
+          </div>
+          <div style="flex:1; padding:16px; background:var(--bg); border:1px solid var(--border); border-radius:8px; text-align:center;">
+            <div style="font-size:9px; color:var(--text-muted); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:6px;">Consistência</div>
+            <div style="font-size:22px; font-weight:700; color:var(--green);">87%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SEPARADOR -->
+<div style="position:relative; height:80px; overflow:hidden; pointer-events:none;">
+  <div style="position:absolute; inset:0; background: linear-gradient(to bottom, transparent 0%, rgba(34,197,94,0.04) 50%, transparent 100%);"></div>
+  <div style="position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:min(700px, 90vw); height:1px; background: linear-gradient(90deg, transparent 0%, rgba(34,197,94,0.5) 30%, rgba(168,85,247,0.5) 70%, transparent 100%);"></div>
+  <div style="position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:6px; height:6px; border-radius:50%; background:var(--green); box-shadow: 0 0 12px var(--green), 0 0 24px rgba(34,197,94,0.4);"></div>
+</div>
+
+<!-- DIFERENCIAIS -->
+<section id="diferenciais">
+  <div class="diferenciais-inner">
+    <div class="diferenciais-header fade-up">
+      <div class="section-tag">// por que lapzy</div>
+      <h2 class="section-headline">Feito para quem<br />pilota de verdade.</h2>
+    </div>
+    <div class="diferenciais-grid">
+      <div class="diferencial-card fade-up">
+        <div class="diferencial-icon">
+          <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        </div>
+        <div class="diferencial-title">Zero hardware</div>
+        <div class="diferencial-desc">Só o seu celular. Nenhum transponder, nenhum sensor externo. Funciona agora.</div>
+      </div>
+      <div class="diferencial-card fade-up">
+        <div class="diferencial-icon">
+          <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18"/></svg>
+        </div>
+        <div class="diferencial-title">Mobile first</div>
+        <div class="diferencial-desc">Pensado para o celular na pista, não para um dashboard no computador.</div>
+      </div>
+      <div class="diferencial-card fade-up">
+        <div class="diferencial-icon">
+          <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        </div>
+        <div class="diferencial-title">Resposta imediata</div>
+        <div class="diferencial-desc">Feedback visual instantâneo na volta. Você sabe se melhorou antes de parar o kart.</div>
+      </div>
+      <div class="diferencial-card fade-up">
+        <div class="diferencial-icon">
+          <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+        </div>
+        <div class="diferencial-title">Simples de configurar</div>
+        <div class="diferencial-desc">Qualquer kartódromo, qualquer traçado. Configure em minutos e corre.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SEPARADOR -->
+<div style="position:relative; height:80px; overflow:hidden; pointer-events:none;">
+  <div style="position:absolute; inset:0; background: linear-gradient(to bottom, transparent 0%, rgba(34,197,94,0.04) 50%, transparent 100%);"></div>
+  <div style="position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:min(700px, 90vw); height:1px; background: linear-gradient(90deg, transparent 0%, rgba(34,197,94,0.5) 30%, rgba(168,85,247,0.5) 70%, transparent 100%);"></div>
+  <div style="position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:6px; height:6px; border-radius:50%; background:var(--green); box-shadow: 0 0 12px var(--green), 0 0 24px rgba(34,197,94,0.4);"></div>
+</div>
+
+<!-- CTA FINAL -->
+<section id="cta-final">
+  <div class="cta-glow"></div>
+  <div class="fade-up">
+    <h2 class="cta-headline">Próxima corrida<br /><span style="color:var(--green)">com dados.</span></h2>
+    <p class="cta-sub">Baixe agora. Configure em 1 minuto. Vá para a pista.</p>
+    <div class="cta-actions">
+      <a href="https://play.google.com/store" class="btn-primary">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M3.18 23.76c.37.2.8.22 1.2.04l12.6-7.07-2.89-2.88L3.18 23.76zm-1.86-1.3c-.08-.19-.12-.4-.12-.62V2.16c0-.22.04-.43.12-.62l10.52 10.46L1.32 22.46zM20.5 10.83l-2.66-1.5L14.7 12l3.14 3.13 2.67-1.5c.76-.43.76-1.37-.01-1.8zM4.38.2C3.98.02 3.55.04 3.18.24l10.9 10.9L7.1 18.1 4.38.2z"/>
+        </svg>
+        Baixar na Google Play
+      </a>
+      <a href="#contato" class="btn-secondary">Entrar em contato →</a>
+    </div>
+  </div>
+</section>
+
+<!-- SEPARADOR -->
+<div style="position:relative; height:80px; overflow:hidden; pointer-events:none;">
+  <div style="position:absolute; inset:0; background: linear-gradient(to bottom, transparent 0%, rgba(34,197,94,0.04) 50%, transparent 100%);"></div>
+  <div style="position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:min(700px, 90vw); height:1px; background: linear-gradient(90deg, transparent 0%, rgba(34,197,94,0.5) 30%, rgba(168,85,247,0.5) 70%, transparent 100%);"></div>
+  <div style="position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:6px; height:6px; border-radius:50%; background:var(--green); box-shadow: 0 0 12px var(--green), 0 0 24px rgba(34,197,94,0.4);"></div>
+</div>
+
+<!-- CONTATO -->
+<section id="contato">
+  <div class="contato-inner fade-up">
+    <div class="contato-title">Fale com a gente</div>
+    <div class="contato-sub">Sugestão, bug, parceria ou só quero contar o tempo da minha melhor volta.</div>
+    <div class="contato-links">
+      <a href="https://wa.me/5582996829262" class="contato-btn whatsapp">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+        WhatsApp
+      </a>
+      <a href="mailto:ricardo.b.silva13@gmail.com" class="contato-btn email">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        ricardo.b.silva13@gmail.com
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">LAP<span>Z</span>Y</div>
+  <div class="footer-copy">© 2026 Lapzy. Todos os direitos reservados.</div>
+</footer>
+
+<script>
+  // Nav scroll behavior
+  const nav = document.getElementById('main-nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 20);
+  });
+
+  // Fade-up intersection observer
+  const fadeEls = document.querySelectorAll('.fade-up');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  fadeEls.forEach(el => observer.observe(el));
+
+  // Carousel captions
+  const CAPTIONS = {
+    config: [
+      '<strong>Largada / Chegada</strong> — Trace a linha de largada diretamente sobre o kartódromo',
+      '<strong>Setores</strong> — Arraste no mapa para definir as fronteiras de cada setor'
+    ],
+    corrida: [
+      '<strong>Setor concluído</strong> — Borda verde: você passou pelo setor com o melhor tempo',
+      '<strong>Melhor volta geral</strong> — Borda verde intensa: nova melhor volta da sessão',
+      '<strong>Volta abaixo do recorde</strong> — Borda vermelha: mais lento que o seu melhor tempo'
+    ]
+  };
+
+  // Carousel logic
+  const carousels = {};
+  function initCarousel(id) {
+    carousels[id] = { index: 0 };
+    updateCaption(id, 0);
+  }
+  initCarousel('config');
+  initCarousel('corrida');
+
+  function updateCaption(id, idx) {
+    const el = document.getElementById('caption-' + id);
+    if (!el || !CAPTIONS[id]) return;
+    el.style.opacity = '0';
+    setTimeout(() => {
+      el.innerHTML = CAPTIONS[id][idx] || '';
+      el.style.opacity = '1';
+    }, 150);
+  }
+
+  function carouselGo(id, idx) {
+    carousels[id].index = idx;
+    const track = document.getElementById('track-' + id);
+    // For corrida, images are direct children — use container width in px
+    if (id === 'corrida') {
+      const containerWidth = track.parentElement.offsetWidth;
+      track.style.transform = `translateX(-${idx * containerWidth}px)`;
+    } else {
+      track.style.transform = `translateX(-${idx * 100}%)`;
+    }
+    const dots = document.querySelectorAll(`#dots-${id} .carousel-dot`);
+    dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+    updateCaption(id, idx);
+  }
+
+  function carouselPrev(id) {
+    const c = carousels[id];
+    const track = document.getElementById('track-' + id);
+    const total = track.children.length;
+    const next = (c.index - 1 + total) % total;
+    carouselGo(id, next);
+  }
+
+  function carouselNext(id) {
+    const c = carousels[id];
+    const track = document.getElementById('track-' + id);
+    const total = track.children.length;
+    const next = (c.index + 1) % total;
+    carouselGo(id, next);
+  }
+
+  // Auto-advance carousels
+  setInterval(() => carouselNext('corrida'), 3200);
+  setInterval(() => carouselNext('config'), 4500);
+
+  // Recalc corrida position on resize
+  window.addEventListener('resize', () => {
+    const c = carousels['corrida'];
+    if (c) carouselGo('corrida', c.index);
+  });
+</script>
+
+<!-- TWEAKS -->
+<script type="text/babel">
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "accentColor": "#22c55e",
+  "heroHeadline": "Sua melhor volta começa com os dados certos.",
+  "showBadges": true,
+  "darkMode": true
+}/*EDITMODE-END*/;
+
+function LapzyTweaks() {
+  const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+
+  React.useEffect(() => {
+    document.documentElement.style.setProperty('--green', t.accentColor);
+    document.documentElement.style.setProperty('--green-glow', t.accentColor + '44');
+  }, [t.accentColor]);
+
+  React.useEffect(() => {
+    const badges = document.querySelector('.hero-badges');
+    if (badges) badges.style.display = t.showBadges ? 'flex' : 'none';
+  }, [t.showBadges]);
+
+  return (
+    <TweaksPanel>
+      <TweakSection label="Identidade">
+        <TweakColor label="Cor de destaque" value={t.accentColor} onChange={v => setTweak('accentColor', v)} />
+      </TweakSection>
+      <TweakSection label="Hero">
+        <TweakText label="Headline" value={t.heroHeadline} onChange={v => setTweak('heroHeadline', v)} />
+        <TweakToggle label="Mostrar badges (Google Play / App Store)" value={t.showBadges} onChange={v => setTweak('showBadges', v)} />
+      </TweakSection>
+    </TweaksPanel>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('tweaks-root')).render(<LapzyTweaks />);
+</script>
+<div id="tweaks-root"></div>
+
+</body>
+</html>
