@@ -29,7 +29,7 @@
   <meta name="twitter:image" content="https://lapzy.app/og-image.svg" />
 
   <!-- Theme color (barra do navegador mobile) -->
-  <meta name="theme-color" content="#080808" />
+  <meta name="theme-color" content="#0A0A0A" />
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -45,19 +45,20 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --green: #22c55e;
-      --green-glow: #22c55e44;
-      --purple: #a855f7;
-      --purple-glow: #a855f744;
-      --red: #ef4444;
-      --red-glow: #ef444433;
-      --bg: #080808;
-      --bg2: #0f0f0f;
-      --bg3: #141414;
-      --border: #1e1e1e;
-      --text: #f5f5f5;
-      --text-muted: #666;
-      --text-dim: #999;
+      --green: #00E676;
+      --green-glow: #00E67644;
+      --purple: #BF5AF2;
+      --purple-glow: #BF5AF244;
+      --red: #FF3B30;
+      --red-glow: #FF3B3033;
+      --brand-orange: #FF6D00;
+      --bg: #0A0A0A;
+      --bg2: #141414;
+      --bg3: #1C1C1C;
+      --border: rgba(255,255,255,0.08);
+      --text: #FFFFFF;
+      --text-muted: rgba(255,255,255,0.30);
+      --text-dim: rgba(255,255,255,0.50);
       --font-display: 'Space Grotesk', sans-serif;
       --font-mono: 'Space Mono', monospace;
     }
@@ -95,7 +96,7 @@
       align-items: center;
       justify-content: space-between;
       padding: 20px 48px;
-      background: rgba(8,8,8,0.85);
+      background: rgba(10,10,10,0.85);
       backdrop-filter: blur(16px);
       border-bottom: 1px solid transparent;
       transition: border-color 0.3s;
@@ -108,7 +109,7 @@
       letter-spacing: -0.5px;
       color: var(--text);
     }
-    .nav-logo span { color: var(--green); }
+    .nav-logo span { color: var(--brand-orange); }
     .nav-cta {
       background: var(--green);
       color: #000;
@@ -145,8 +146,8 @@
       position: absolute;
       inset: 0;
       background-image:
-        linear-gradient(rgba(34,197,94,0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(34,197,94,0.04) 1px, transparent 1px);
+        linear-gradient(rgba(0,230,118,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,230,118,0.04) 1px, transparent 1px);
       background-size: 60px 60px;
       mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black 40%, transparent 100%);
     }
@@ -156,7 +157,7 @@
       width: 600px;
       height: 600px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(34,197,94,0.12) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(0,230,118,0.12) 0%, transparent 70%);
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
@@ -229,11 +230,11 @@
       cursor: pointer;
       text-decoration: none;
       transition: all 0.2s;
-      box-shadow: 0 0 32px rgba(34,197,94,0.25);
+      box-shadow: 0 0 32px rgba(0,230,118,0.25);
     }
     .btn-primary:hover {
       transform: translateY(-2px);
-      box-shadow: 0 0 48px rgba(34,197,94,0.4);
+      box-shadow: 0 0 48px rgba(0,230,118,0.4);
     }
     .btn-primary svg { flex-shrink: 0; }
 
@@ -287,7 +288,7 @@
       box-shadow:
         0 0 0 1px #1a1a1a,
         0 32px 64px rgba(0,0,0,0.8),
-        0 0 80px rgba(34,197,94,0.1);
+        0 0 80px rgba(0,230,118,0.1);
       display: inline-block;
       position: relative;
     }
@@ -302,7 +303,7 @@
       box-shadow:
         0 0 0 1px #1a1a1a,
         0 32px 64px rgba(0,0,0,0.8),
-        0 0 80px rgba(168,85,247,0.1);
+        0 0 80px rgba(191,90,242,0.1);
       display: inline-block;
     }
     .mockup-landscape img { width: 100%; display: block; }
@@ -493,15 +494,15 @@
     }
     .pillar:hover {
       border-color: var(--green);
-      box-shadow: 0 0 24px rgba(34,197,94,0.05);
+      box-shadow: 0 0 24px rgba(0,230,118,0.05);
     }
     .pillar-icon {
       width: 40px;
       height: 40px;
       flex-shrink: 0;
       border-radius: 8px;
-      background: rgba(34,197,94,0.1);
-      border: 1px solid rgba(34,197,94,0.2);
+      background: rgba(0,230,118,0.1);
+      border: 1px solid rgba(0,230,118,0.2);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -544,7 +545,7 @@
       border-bottom: 1px solid var(--border);
     }
     .terminal-dot { width: 10px; height: 10px; border-radius: 50%; }
-    .terminal-dot.red { background: #ef4444; }
+    .terminal-dot.red { background: #FF3B30; }
     .terminal-dot.yellow { background: #f59e0b; }
     .terminal-dot.green { background: var(--green); }
     .terminal-title { font-size: 11px; color: var(--text-muted); letter-spacing: 0.1em; margin-left: auto; }
@@ -575,9 +576,9 @@
     .terminal-big-badge {
       display: inline-block;
       margin-top: 10px;
-      background: rgba(34,197,94,0.15);
-      color: var(--green);
-      border: 1px solid rgba(34,197,94,0.3);
+      background: rgba(191,90,242,0.15);
+      color: var(--purple);
+      border: 1px solid rgba(191,90,242,0.3);
       border-radius: 4px;
       padding: 3px 10px;
       font-size: 10px;
@@ -756,7 +757,7 @@
       transition: all 0.2s;
       z-index: 2;
     }
-    .carousel-nav:hover { background: rgba(34,197,94,0.15); border-color: var(--green); }
+    .carousel-nav:hover { background: rgba(0,230,118,0.15); border-color: var(--green); }
     .carousel-nav.prev { left: 10px; }
     .carousel-nav.next { right: 10px; }
 
@@ -803,14 +804,14 @@
     .diferencial-card:hover {
       border-color: var(--green);
       transform: translateY(-4px);
-      box-shadow: 0 16px 48px rgba(0,0,0,0.4), 0 0 32px rgba(34,197,94,0.06);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.4), 0 0 32px rgba(0,230,118,0.06);
     }
     .diferencial-icon {
       width: 48px;
       height: 48px;
       border-radius: 10px;
-      background: rgba(34,197,94,0.08);
-      border: 1px solid rgba(34,197,94,0.15);
+      background: rgba(0,230,118,0.08);
+      border: 1px solid rgba(0,230,118,0.15);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -918,7 +919,7 @@
       width: 500px;
       height: 500px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(34,197,94,0.1) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(0,230,118,0.1) 0%, transparent 70%);
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
@@ -1036,7 +1037,7 @@
       font-weight: 700;
       color: var(--text-dim);
     }
-    .footer-logo span { color: var(--green); }
+    .footer-logo span { color: var(--brand-orange); }
     .footer-copy {
       font-size: 12px;
       color: var(--text-muted);
@@ -1066,7 +1067,7 @@
 
 <!-- NAV -->
 <nav id="main-nav">
-  <div class="nav-logo">LAP<span>Z</span>Y</div>
+  <div class="nav-logo">LAP<span>ZY</span></div>
   <a href="https://play.google.com/store" class="nav-cta">Baixar agora</a>
 </nav>
 
@@ -1106,12 +1107,12 @@
 
   <!-- FLOW INDICATORS -->
   <div style="display:flex; align-items:center; gap:0; margin-bottom:48px; flex-wrap:wrap; justify-content:center; row-gap:12px;">
-    <div style="display:flex; align-items:center; gap:10px; padding:10px 20px; background:rgba(34,197,94,0.07); border:1px solid rgba(34,197,94,0.2); border-radius:8px;">
+    <div style="display:flex; align-items:center; gap:10px; padding:10px 20px; background:rgba(0,230,118,0.07); border:1px solid rgba(0,230,118,0.2); border-radius:8px;">
       <span style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.15em; color:var(--green); font-weight:700; text-transform:uppercase;">01</span>
       <span style="font-size:13px; color:var(--text-dim); font-weight:500;">Configure o traçado</span>
     </div>
     <div style="padding:0 8px; color:#333; font-size:18px; font-weight:300;" class="flow-arrow">→</div>
-    <div style="display:flex; align-items:center; gap:10px; padding:10px 20px; background:rgba(168,85,247,0.07); border:1px solid rgba(168,85,247,0.2); border-radius:8px;">
+    <div style="display:flex; align-items:center; gap:10px; padding:10px 20px; background:rgba(191,90,242,0.07); border:1px solid rgba(191,90,242,0.2); border-radius:8px;">
       <span style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.15em; color:var(--purple); font-weight:700; text-transform:uppercase;">02</span>
       <span style="font-size:13px; color:var(--text-dim); font-weight:500;">Acompanhe cada volta</span>
     </div>
@@ -1136,12 +1137,12 @@
           <div class="stat-value purple">0:58.341</div>
         </div>
         <!-- Setor 1 verde — meio direito -->
-        <div class="floating-stat" style="top:38%; right:-16px; animation-delay:1s; border-color: rgba(34,197,94,0.35);">
+        <div class="floating-stat" style="top:38%; right:-16px; animation-delay:1s; border-color: rgba(0,230,118,0.35);">
           <div class="stat-label">Setor 1</div>
           <div class="stat-value" style="color:var(--green);">▲ 0:19.120</div>
         </div>
         <!-- Setor 2 vermelho — baixo direito -->
-        <div class="floating-stat" style="bottom:-16px; right:-16px; animation-delay:2s; border-color: rgba(239,68,68,0.35);">
+        <div class="floating-stat" style="bottom:-16px; right:-16px; animation-delay:2s; border-color: rgba(255,59,48,0.35);">
           <div class="stat-label">Setor 2</div>
           <div class="stat-value" style="color:var(--red);">▼ 0:22.840</div>
         </div>
@@ -1157,7 +1158,7 @@
 <div style="position:relative; height:80px; overflow:hidden; pointer-events:none;">
   <div style="
     position:absolute; inset:0;
-    background: linear-gradient(to bottom, transparent 0%, rgba(34,197,94,0.04) 50%, transparent 100%);
+    background: linear-gradient(to bottom, transparent 0%, rgba(0,230,118,0.04) 50%, transparent 100%);
   "></div>
   <div style="
     position:absolute;
@@ -1165,7 +1166,7 @@
     transform:translate(-50%,-50%);
     width:min(700px, 90vw);
     height:1px;
-    background: linear-gradient(90deg, transparent 0%, rgba(34,197,94,0.5) 30%, rgba(168,85,247,0.5) 70%, transparent 100%);
+    background: linear-gradient(90deg, transparent 0%, rgba(0,230,118,0.5) 30%, rgba(191,90,242,0.5) 70%, transparent 100%);
   "></div>
   <div style="
     position:absolute;
@@ -1174,7 +1175,7 @@
     width:6px; height:6px;
     border-radius:50%;
     background:var(--green);
-    box-shadow: 0 0 12px var(--green), 0 0 24px rgba(34,197,94,0.4);
+    box-shadow: 0 0 12px var(--green), 0 0 24px rgba(0,230,118,0.4);
   "></div>
 </div>
 
@@ -1217,9 +1218,9 @@
 
 <!-- SEPARADOR -->
 <div style="position:relative; height:80px; overflow:hidden; pointer-events:none;">
-  <div style="position:absolute; inset:0; background: linear-gradient(to bottom, transparent 0%, rgba(34,197,94,0.04) 50%, transparent 100%);"></div>
-  <div style="position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:min(700px, 90vw); height:1px; background: linear-gradient(90deg, transparent 0%, rgba(34,197,94,0.5) 30%, rgba(168,85,247,0.5) 70%, transparent 100%);"></div>
-  <div style="position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:6px; height:6px; border-radius:50%; background:var(--green); box-shadow: 0 0 12px var(--green), 0 0 24px rgba(34,197,94,0.4);"></div>
+  <div style="position:absolute; inset:0; background: linear-gradient(to bottom, transparent 0%, rgba(0,230,118,0.04) 50%, transparent 100%);"></div>
+  <div style="position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:min(700px, 90vw); height:1px; background: linear-gradient(90deg, transparent 0%, rgba(0,230,118,0.5) 30%, rgba(191,90,242,0.5) 70%, transparent 100%);"></div>
+  <div style="position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:6px; height:6px; border-radius:50%; background:var(--green); box-shadow: 0 0 12px var(--green), 0 0 24px rgba(0,230,118,0.4);"></div>
 </div>
 
 <!-- SOLUÇÃO -->
@@ -1305,9 +1306,9 @@
 
 <!-- SEPARADOR -->
 <div style="position:relative; height:80px; overflow:hidden; pointer-events:none;">
-  <div style="position:absolute; inset:0; background: linear-gradient(to bottom, transparent 0%, rgba(34,197,94,0.04) 50%, transparent 100%);"></div>
-  <div style="position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:min(700px, 90vw); height:1px; background: linear-gradient(90deg, transparent 0%, rgba(34,197,94,0.5) 30%, rgba(168,85,247,0.5) 70%, transparent 100%);"></div>
-  <div style="position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:6px; height:6px; border-radius:50%; background:var(--green); box-shadow: 0 0 12px var(--green), 0 0 24px rgba(34,197,94,0.4);"></div>
+  <div style="position:absolute; inset:0; background: linear-gradient(to bottom, transparent 0%, rgba(0,230,118,0.04) 50%, transparent 100%);"></div>
+  <div style="position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:min(700px, 90vw); height:1px; background: linear-gradient(90deg, transparent 0%, rgba(0,230,118,0.5) 30%, rgba(191,90,242,0.5) 70%, transparent 100%);"></div>
+  <div style="position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:6px; height:6px; border-radius:50%; background:var(--green); box-shadow: 0 0 12px var(--green), 0 0 24px rgba(0,230,118,0.4);"></div>
 </div>
 
 <!-- TELAS -->
@@ -1416,15 +1417,15 @@
         <div style="font-size:11px; color:var(--purple); letter-spacing:0.1em; margin-bottom:28px;">★ RECORDE PESSOAL</div>
 
         <div style="display:flex; flex-direction:column; gap:12px; margin-bottom:28px;">
-          <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 14px; background:rgba(34,197,94,0.06); border:1px solid rgba(34,197,94,0.15); border-radius:8px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 14px; background:rgba(0,230,118,0.06); border:1px solid rgba(0,230,118,0.15); border-radius:8px;">
             <span style="font-size:11px; color:var(--text-muted);">S1</span>
             <span style="font-size:14px; font-weight:700; color:var(--green);">0:19.120</span>
           </div>
-          <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 14px; background:rgba(34,197,94,0.06); border:1px solid rgba(34,197,94,0.15); border-radius:8px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 14px; background:rgba(0,230,118,0.06); border:1px solid rgba(0,230,118,0.15); border-radius:8px;">
             <span style="font-size:11px; color:var(--text-muted);">S2</span>
             <span style="font-size:14px; font-weight:700; color:var(--green);">0:22.010</span>
           </div>
-          <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 14px; background:rgba(239,68,68,0.06); border:1px solid rgba(239,68,68,0.15); border-radius:8px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 14px; background:rgba(255,59,48,0.06); border:1px solid rgba(255,59,48,0.15); border-radius:8px;">
             <span style="font-size:11px; color:var(--text-muted);">S3</span>
             <span style="font-size:14px; font-weight:700; color:var(--red);">0:17.211</span>
           </div>
@@ -1447,9 +1448,9 @@
 
 <!-- SEPARADOR -->
 <div style="position:relative; height:80px; overflow:hidden; pointer-events:none;">
-  <div style="position:absolute; inset:0; background: linear-gradient(to bottom, transparent 0%, rgba(34,197,94,0.04) 50%, transparent 100%);"></div>
-  <div style="position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:min(700px, 90vw); height:1px; background: linear-gradient(90deg, transparent 0%, rgba(34,197,94,0.5) 30%, rgba(168,85,247,0.5) 70%, transparent 100%);"></div>
-  <div style="position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:6px; height:6px; border-radius:50%; background:var(--green); box-shadow: 0 0 12px var(--green), 0 0 24px rgba(34,197,94,0.4);"></div>
+  <div style="position:absolute; inset:0; background: linear-gradient(to bottom, transparent 0%, rgba(0,230,118,0.04) 50%, transparent 100%);"></div>
+  <div style="position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:min(700px, 90vw); height:1px; background: linear-gradient(90deg, transparent 0%, rgba(0,230,118,0.5) 30%, rgba(191,90,242,0.5) 70%, transparent 100%);"></div>
+  <div style="position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:6px; height:6px; border-radius:50%; background:var(--green); box-shadow: 0 0 12px var(--green), 0 0 24px rgba(0,230,118,0.4);"></div>
 </div>
 
 <!-- DIFERENCIAIS -->
@@ -1494,9 +1495,9 @@
 
 <!-- SEPARADOR -->
 <div style="position:relative; height:80px; overflow:hidden; pointer-events:none;">
-  <div style="position:absolute; inset:0; background: linear-gradient(to bottom, transparent 0%, rgba(34,197,94,0.04) 50%, transparent 100%);"></div>
-  <div style="position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:min(700px, 90vw); height:1px; background: linear-gradient(90deg, transparent 0%, rgba(34,197,94,0.5) 30%, rgba(168,85,247,0.5) 70%, transparent 100%);"></div>
-  <div style="position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:6px; height:6px; border-radius:50%; background:var(--green); box-shadow: 0 0 12px var(--green), 0 0 24px rgba(34,197,94,0.4);"></div>
+  <div style="position:absolute; inset:0; background: linear-gradient(to bottom, transparent 0%, rgba(0,230,118,0.04) 50%, transparent 100%);"></div>
+  <div style="position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:min(700px, 90vw); height:1px; background: linear-gradient(90deg, transparent 0%, rgba(0,230,118,0.5) 30%, rgba(191,90,242,0.5) 70%, transparent 100%);"></div>
+  <div style="position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:6px; height:6px; border-radius:50%; background:var(--green); box-shadow: 0 0 12px var(--green), 0 0 24px rgba(0,230,118,0.4);"></div>
 </div>
 
 <!-- CTA FINAL -->
@@ -1519,9 +1520,9 @@
 
 <!-- SEPARADOR -->
 <div style="position:relative; height:80px; overflow:hidden; pointer-events:none;">
-  <div style="position:absolute; inset:0; background: linear-gradient(to bottom, transparent 0%, rgba(34,197,94,0.04) 50%, transparent 100%);"></div>
-  <div style="position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:min(700px, 90vw); height:1px; background: linear-gradient(90deg, transparent 0%, rgba(34,197,94,0.5) 30%, rgba(168,85,247,0.5) 70%, transparent 100%);"></div>
-  <div style="position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:6px; height:6px; border-radius:50%; background:var(--green); box-shadow: 0 0 12px var(--green), 0 0 24px rgba(34,197,94,0.4);"></div>
+  <div style="position:absolute; inset:0; background: linear-gradient(to bottom, transparent 0%, rgba(0,230,118,0.04) 50%, transparent 100%);"></div>
+  <div style="position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:min(700px, 90vw); height:1px; background: linear-gradient(90deg, transparent 0%, rgba(0,230,118,0.5) 30%, rgba(191,90,242,0.5) 70%, transparent 100%);"></div>
+  <div style="position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:6px; height:6px; border-radius:50%; background:var(--green); box-shadow: 0 0 12px var(--green), 0 0 24px rgba(0,230,118,0.4);"></div>
 </div>
 
 <!-- CONTATO -->
@@ -1544,7 +1545,7 @@
 
 <!-- FOOTER -->
 <footer>
-  <div class="footer-logo">LAP<span>Z</span>Y</div>
+  <div class="footer-logo">LAP<span>ZY</span></div>
   <div class="footer-copy">© 2026 Lapzy. Todos os direitos reservados.</div>
 </footer>
 
@@ -1644,7 +1645,7 @@
 <!-- TWEAKS -->
 <script type="text/babel">
 const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
-  "accentColor": "#22c55e",
+  "accentColor": "#00E676",
   "heroHeadline": "Sua melhor volta começa com os dados certos.",
   "showBadges": true,
   "darkMode": true
